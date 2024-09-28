@@ -1,0 +1,5 @@
+streamlit
+pymongo
+Pillow
+pandas
+textblob
