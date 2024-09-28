@@ -6,6 +6,19 @@ import random
 from PIL import Image
 import pandas as pd
 from textblob import TextBlob
+#import streamlit as st
+
+st.set_page_config(
+    page_title="Your App Title",
+    page_icon="🧊",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': None,
+        'Report a bug': None,
+        'About': None
+    }
+)
 
 # MongoDB Connection Setup
 client = MongoClient(
