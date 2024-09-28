@@ -15,7 +15,9 @@ collection = db["Prompt_Power"]
 
 # Display logo
 try:
-    st.image("123_1.png", width=100)
+   # st.image("123_1.png", width=100)
+    image_url = "https://raw.githubusercontent.com/kclarke85/Prompt_Gen/main/123_1.PNG"
+
 except FileNotFoundError:
     st.error("Logo not found. Please check the path.")
 
