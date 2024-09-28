@@ -7,6 +7,25 @@ from PIL import Image
 import pandas as pd
 from textblob import TextBlob
 
+#import streamlit as st
+
+# Set page configuration
+st.set_page_config(page_title="Page Title", layout="wide")
+
+# Hide Streamlit UI elements
+st.markdown("""
+    <style>
+        .reportview-container {
+            margin-top: -2em;
+        }
+        #MainMenu {visibility: hidden;}  /* Hides the hamburger menu (top-right corner) */
+        .stDeployButton {display:none;}  /* Hides the share button */
+        footer {visibility: hidden;}     /* Hides the footer */
+        #stDecoration {display:none;}    /* Hides any extra decoration */
+    </style>
+""", unsafe_allow_html=True)
+
+
 # MongoDB Connection Setup
 client = MongoClient(
     'mongodb+srv://doadmin:016P5a8HRn23es7h@Dolphin-439a4f33.mongo.ondigitalocean.com/admin?retryWrites=true&w=majority')
