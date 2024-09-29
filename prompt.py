@@ -30,10 +30,10 @@ db = client["Aliyah"]
 collection = db["Prompt_Power"]
 
 # Display logo
-try:
-    st.image("123_1.png", width=100)
-except FileNotFoundError:
-    st.error("Logo not found. Please check the path.")
+#try:
+#    st.image("123_1.png", width=100)
+#except FileNotFoundError:
+#    st.error("Logo not found. Please check the path.")
 
 # Display image
 image_path = "write.jpg"
