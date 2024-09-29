@@ -1,4 +1,3 @@
-# 9/27
 import streamlit as st
 from pymongo import MongoClient
 from datetime import datetime
@@ -6,19 +5,23 @@ import random
 from PIL import Image
 import pandas as pd
 from textblob import TextBlob
-#import streamlit as st
 
-st.set_page_config(
-    page_title="Your App Title",
-    page_icon="🧊",
-    layout="wide",
-    initial_sidebar_state="expanded",
-    menu_items={
-        'Get Help': None,
-        'Report a bug': None,
-        'About': None
-    }
-)
+# Inject JavaScript to hide the Streamlit header and footer
+hide_streamlit_style = """
+    <style>
+        /* Hide Streamlit default header and footer */
+        header {visibility: hidden;}
+        footer {visibility: hidden;}
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Select and hide header and footer by class or ID
+            document.querySelector('header').style.display = 'none';  // Hide header
+            document.querySelector('footer').style.display = 'none';  // Hide footer
+        });
+    </script>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # MongoDB Connection Setup
 client = MongoClient(
@@ -28,9 +31,7 @@ collection = db["Prompt_Power"]
 
 # Display logo
 try:
-   # st.image("123_1.png", width=100)
-    image_url = "https://raw.githubusercontent.com/kclarke85/Prompt_Gen/main/123_1.PNG"
-
+    st.image("123_1.png", width=100)
 except FileNotFoundError:
     st.error("Logo not found. Please check the path.")
 
