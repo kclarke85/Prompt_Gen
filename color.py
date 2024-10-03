@@ -18,6 +18,24 @@ import streamlit as st
 from PIL import Image, ImageFilter, ImageOps, ImageDraw, ImageFont
 import io
 
+# Inject JavaScript to hide the Streamlit header and footer
+hide_streamlit_style = """
+    <style>
+        /* Hide Streamlit default header and footer */
+        header {visibility: hidden;}
+        footer {visibility: hidden;}
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Select and hide header and footer by class or ID
+            document.querySelector('header').style.display = 'none';  // Hide header
+            document.querySelector('footer').style.display = 'none';  // Hide footer
+        });
+    </script>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+
 # Create the Streamlit app
 def main():
     # 1. Add a logo at the top (replace with your own image path if needed)
