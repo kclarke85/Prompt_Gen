@@ -21,7 +21,7 @@ import io
 # Create the Streamlit app
 def main():
     # 1. Add a logo at the top (replace with your own image path if needed)
-    st.image('123_1.png', use_column_width=True)  # Ensure you have a logo named 'logo.png'
+    # st.image('123_1.png', use_column_width=True)  # Ensure you have a logo named 'logo.png'
 
     # 2. Add a description
     st.write("""
