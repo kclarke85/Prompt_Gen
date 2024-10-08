@@ -1,0 +1,31 @@
+// Dimensions for the dog bone mold
+length = 59;
+width = 20;
+height = 10;
+text_depth = 1.5;
+font_size = 6;
+text_margin = 5;
+
+// Main bone shape
+module dog_bone() {
+    difference() {
+        // Create a rounded rectangle for the mold base
+        rounded_rectangle(length, width, height);
+        // Emboss the name "Bella" on the top inside the bone
+        translate([length / 2, width / 2, height + text_depth])
+            text("Bella", size = font_size, valign = "center", halign = "center", font = "Liberation Sans", $fn = 100);
+    }
+}
+
+// Function to create a rounded rectangle
+module rounded_rectangle(l, w, h) {
+    r = w / 2;
+    hull() {
+        translate([r, 0, 0]) cylinder(h, r, r);
+        translate([l - r, 0, 0]) cylinder(h, r, r);
+        translate([r, w, 0]) cylinder(h, r, r);
+        translate([l - r, w, 0]) cylinder(h, r, r);
+    }
+}
+
+dog_bone();

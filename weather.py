@@ -11,11 +11,6 @@ engine = pyttsx3.init()
 if 'engine_running' not in st.session_state:
     st.session_state.engine_running = False
 
-# Create a Stop button at the top of the page
-if st.button("Stop"):
-    st.session_state.engine_running = False
-    engine.stop()  # Stop the TTS engine
-
 # Configure the Streamlit app
 st.title("Weather Radio - Active Major Weather Alerts")
 st.write("Tune into live weather alerts across the U.S., including hurricanes.")
