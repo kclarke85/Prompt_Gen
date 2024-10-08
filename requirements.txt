@@ -5,4 +5,6 @@ pandas
 textblob
 requests
 pyttsx3
+pyowm
+gtts
 
