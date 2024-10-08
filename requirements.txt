@@ -3,3 +3,6 @@ pymongo
 Pillow
 pandas
 textblob
+requests
+pyttsx3
+
