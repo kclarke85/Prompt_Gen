@@ -1,44 +1,50 @@
 import streamlit as st
-import pyttsx3
-import feedparser
+import requests
+from datetime import datetime
 
-# Initialize text-to-speech engine
-engine = pyttsx3.init()
 
-# Fetch the weather alerts using a region-specific NOAA RSS feed
 def get_weather_alerts():
-    # Replace with a region-specific feed if necessary
-    feed_url = "https://alerts.weather.gov/cap/fl.php?x=0"  # Example for Florida
-    feed = feedparser.parse(feed_url)
-    entries = feed.entries
-    if entries:
-        return entries[0].title, entries[0].summary
+    url = "https://api.weather.gov/alerts/active?status=actual&message_type=alert"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        return data['features']
     else:
-        return None, None
+        return []
 
-# Speak out the weather alert
-def speak_alert(alert_text):
-    engine.say(alert_text)
-    engine.runAndWait()
 
-# Streamlit App UI
-st.title("National Weather Alerts (US)")
+def main():
+    st.title("US National Weather Alerts")
 
-# Create a two-column layout: the first column will hold the button
-col1, col2 = st.columns([1, 4])
+    # Layout with two columns: video on the left, alerts on the right
+    col1, col2 = st.columns([1, 3])
 
-# Add button in the first (left) column
-with col1:
-    if st.button("Speak Alert"):
-        title, summary = get_weather_alerts()
-        if summary:
-            speak_alert(summary)
+    with col1:
+        st.write("Watch current NOAA weather alerts:")
+        video_url = "https://www.youtube.com/embed/-5z2YnhI6Ew"  # Embedded actual NOAA weather video URL
+        st.video(video_url)
 
-# Display the alert in the main section
-title, summary = get_weather_alerts()
+    with col2:
+        if 'alerts' not in st.session_state:
+            st.session_state.alerts = []
 
-if title and summary:
-    st.subheader(f"Alert: {title}")
-    st.write(summary)
-else:
-    st.write("No weather alerts at the moment.")
+        if st.button("Get Latest Alerts"):  # Changed "Fetch" to "Get"
+            st.session_state.alerts = get_weather_alerts()
+
+        if st.session_state.alerts:
+            for alert in st.session_state.alerts:
+                properties = alert['properties']
+                st.subheader(properties['event'])
+                st.write(f"Affected area: {properties['areaDesc']}")
+                st.write(f"Severity: {properties['severity']}")
+                st.write(f"Urgency: {properties['urgency']}")
+                st.write(f"Start: {datetime.fromisoformat(properties['effective']).strftime('%Y-%m-%d %H:%M:%S')}")
+                st.write(f"End: {datetime.fromisoformat(properties['expires']).strftime('%Y-%m-%d %H:%M:%S')}")
+                st.write(f"Description: {properties['description']}")
+                st.write("---")
+        else:
+            st.write("No active weather alerts at the moment.")
+
+
+if __name__ == "__main__":
+    main()
