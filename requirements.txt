@@ -1,3 +1,4 @@
+
 streamlit
 pymongo
 Pillow
@@ -7,3 +8,4 @@ requests
 pyttsx3
 feedparser
 dropbox
+load_dotenv
