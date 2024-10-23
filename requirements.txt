@@ -9,3 +9,6 @@ pyttsx3
 feedparser
 dropbox
 load_dotenv
+moviepy>=1.0.3
+gTTS>=2.3.2
+python-tempfile>=3.0.0
