@@ -10,4 +10,3 @@ dropbox
 load_dotenv
 moviepy
 gTTS
-python-tempfile
