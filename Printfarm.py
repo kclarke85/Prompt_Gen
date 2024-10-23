@@ -1,29 +1,32 @@
 import os
+import streamlit as st
 from dotenv import load_dotenv
 import dropbox
 
 # Load environment variables
 load_dotenv()
 
-# Get Dropbox access token from environment variable
-DROPBOX_ACCESS_TOKEN = os.getenv('DROPBOX_TOKEN')
-
-# Check if token exists
-if DROPBOX_ACCESS_TOKEN is None:
-    raise ValueError("Dropbox access token not found in environment variables!")
-
-# Initialize Dropbox client
-try:
-    dbx = dropbox.Dropbox(DROPBOX_ACCESS_TOKEN)
-    print("Successfully connected to Dropbox!")
-except Exception as e:
-    print(f"Error connecting to Dropbox: {e}")
-
-# Example upload function
-def upload_to_dropbox(local_file_path, dropbox_file_path):
+# Try to get token from multiple sources
+def get_dropbox_token():
+    # First try to get from Streamlit secrets
     try:
-        with open(local_file_path, 'rb') as f:
-            dbx.files_upload(f.read(), dropbox_file_path)
-        print(f"Successfully uploaded {local_file_path} to Dropbox!")
-    except Exception as e:
-        print(f"Error uploading to Dropbox: {e}")
+        return st.secrets["DROPBOX_TOKEN"]
+    except:
+        # Then try environment variable
+        return os.getenv('DROPBOX_TOKEN')
+
+# Initialize Dropbox client more safely
+def init_dropbox():
+    token = get_dropbox_token()
+    if not token:
+        st.error("Dropbox token not found. Please configure it in Streamlit secrets or environment variables.")
+        st.stop()
+    return dropbox.Dropbox(token)
+
+# Use in your app
+try:
+    dbx = init_dropbox()
+    # Your existing code here
+except Exception as e:
+    st.error(f"Error connecting to Dropbox: {str(e)}")
+    st.stop()
