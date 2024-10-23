@@ -132,9 +132,9 @@ def main():
     st.markdown("""
     ---
     ### PrintMaster Pro
-    🏢 7820 Wynfield dr Cumming GA 30040 
-    📞 (470)404-5798
-    #📧 info@printmasterpro.com
+    🏢 7820 Wynfield DR. CUmming GA. 30040  
+    📞 (470) 404-5798  
+   
 
     #### Business Hours
     Monday - Friday: 9:00 AM - 6:00 PM  
