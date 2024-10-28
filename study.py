@@ -372,32 +372,6 @@ import random
 from datetime import datetime
 import re
 
-import streamlit as st
-
-def hide_streamlit_header_footer():
-    """
-    Function to hide the Streamlit header and footer in the app.
-    """
-    hide_st_style = """
-        <style>
-        /* Hide Streamlit header */
-        header {visibility: hidden;}
-        
-        /* Hide Streamlit footer */
-        footer {visibility: hidden;}
-        </style>
-    """
-    st.markdown(hide_st_style, unsafe_allow_html=True)
-
-# Call the function to apply the CSS
-hide_streamlit_header_footer()
-
-# Rest of your Streamlit app
-st.title("My Streamlit App")
-st.write("This is the main content of the app.")
-
-
-
 # Configure Streamlit with correct settings
 st.set_page_config(
     page_title="StudyBot",
