@@ -14,89 +14,227 @@
 #
 #
 # create_coloring_page("dogs.jpg")
+
 import streamlit as st
 from PIL import Image, ImageFilter, ImageOps, ImageDraw, ImageFont
 import io
 
-# Inject JavaScript to hide the Streamlit header and footer
-hide_streamlit_style = """
+# Set page configuration
+st.set_page_config(
+    page_title="Coloring Page Creator",
+    page_icon="🎨",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# Custom CSS and JavaScript
+st.markdown("""
     <style>
-        /* Hide Streamlit default header and footer */
-        header {visibility: hidden;}
-        footer {visibility: hidden;}
+    /* Hide Streamlit default header and footer */
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+
+    /* Custom styling */
+    .stApp {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .main-header {
+        text-align: center;
+        padding: 2rem 0;
+        color: #1E88E5;
+    }
+    .upload-section {
+        background-color: #f5f5f5;
+        padding: 2rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+    }
+    .controls-section {
+        background-color: #e3f2fd;
+        padding: 2rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+    }
+    .result-section {
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .stButton button {
+        width: 100%;
+        background-color: #1E88E5;
+        color: white;
+    }
+    .download-button {
+        text-align: center;
+        padding: 1rem;
+    }
     </style>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Select and hide header and footer by class or ID
-            document.querySelector('header').style.display = 'none';  // Hide header
-            document.querySelector('footer').style.display = 'none';  // Hide footer
-        });
-    </script>
-"""
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 
-# Create the Streamlit app
-def main():
-    # 1. Add a logo at the top (replace with your own image path if needed)
-    # st.image('123_1.png', use_column_width=True)  # Ensure you have a logo named 'logo.png'
+class ColoringPageCreator:
+    @staticmethod
+    def process_image(img, edge_detection_strength=3, brightness_adjustment=1.2):
+        # Convert to grayscale
+        img = img.convert("L")
 
-    # 2. Add a description
-    st.write("""
-    ## Upload your own photos or royalty-free photos and create custom coloring book pages. 
-    Perfect for kids, adults, or seniors.
-    """)
+        # Adjust brightness
+        img = ImageOps.autocontrast(img, cutoff=2)
 
-    # 3. Add functionality to upload a photo (PNG or JPG)
-    uploaded_image = st.file_uploader("Choose a PNG or JPG image", type=["png", "jpg", "jpeg"])
+        # Apply edge detection multiple times for stronger edges
+        for _ in range(edge_detection_strength):
+            img = img.filter(ImageFilter.FIND_EDGES)
 
-    # 7. Add an input for custom text to add to the image
-    user_text = st.text_input("Add custom text to your coloring page", "")
+        # Invert colors and enhance contrast
+        img = ImageOps.invert(img)
+        img = ImageOps.autocontrast(img, cutoff=0)
 
-    # 4. Add a submit button
-    if st.button("Submit"):
-        if uploaded_image is not None:
-            # Open the uploaded image
-            img = Image.open(uploaded_image)
-            coloring_page = create_coloring_page(img, user_text)
+        return img
 
-            # 5. Display the resulting image
-            st.image(coloring_page, caption='Your Coloring Page', use_column_width=True)
-
-            # 6. Add a download button
-            download_coloring_page(coloring_page)
-
-# Function to create a coloring page
-def create_coloring_page(img, user_text):
-    # Convert the image to grayscale and apply edge detection
-    img = img.convert("L")
-    img = img.filter(ImageFilter.FIND_EDGES)
-    img = ImageOps.invert(img)
-
-    # Add the custom text to the image if provided
-    if user_text:
+    @staticmethod
+    def add_text(img, text, position="bottom", font_size=40):
         draw = ImageDraw.Draw(img)
-        # Load a font (you can use a different font path if needed)
-        font = ImageFont.load_default()
-        text_position = (10, img.height - 30)  # Position at the bottom-left corner
-        draw.text(text_position, user_text, fill="black", font=font)
 
-    return img
+        try:
+            font = ImageFont.truetype("arial.ttf", font_size)
+        except:
+            font = ImageFont.load_default()
 
-# Function to add a download button for the image
-def download_coloring_page(image):
-    # Save the image to an in-memory file
+        # Calculate text size and position
+        text_bbox = draw.textbbox((0, 0), text, font=font)
+        text_width = text_bbox[2] - text_bbox[0]
+        text_height = text_bbox[3] - text_bbox[1]
+
+        if position == "bottom":
+            text_position = ((img.width - text_width) // 2, img.height - text_height - 20)
+        else:  # top
+            text_position = ((img.width - text_width) // 2, 20)
+
+        # Add text with shadow effect
+        shadow_offset = 2
+        draw.text(
+            (text_position[0] + shadow_offset, text_position[1] + shadow_offset),
+            text,
+            fill="gray",
+            font=font
+        )
+        draw.text(text_position, text, fill="black", font=font)
+
+        return img
+
+
+def download_image(image, file_name):
     img_byte_arr = io.BytesIO()
-    image.save(img_byte_arr, format='JPEG')
+    image.save(img_byte_arr, format='PNG', quality=95)
     img_byte_arr = img_byte_arr.getvalue()
 
-    # Add download button
-    st.download_button(
-        label="Download Coloring Page",
+    return st.download_button(
+        label="⬇️ Download Coloring Page",
         data=img_byte_arr,
-        file_name="coloring_page.jpg",
-        mime="image/jpeg"
+        file_name=file_name,
+        mime="image/png",
+        key='download_button'
     )
 
+
+def main():
+    st.markdown('<h1 class="main-header">🎨 Coloring Page Creator</h1>', unsafe_allow_html=True)
+
+    st.markdown("""
+    <div style='text-align: center; padding: 0 2rem;'>
+        <h3>Transform your photos into beautiful coloring pages!</h3>
+        <p>Perfect for kids, adults, and seniors. Upload any image to get started.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Create two columns for the main layout
+    col1, col2 = st.columns([2, 3])
+
+    with col1:
+        st.markdown('<div class="upload-section">', unsafe_allow_html=True)
+        uploaded_file = st.file_uploader(
+            "Choose an image (PNG or JPG)",
+            type=["png", "jpg", "jpeg"],
+            help="Upload a clear image with good contrast for best results"
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        if uploaded_file:
+            st.markdown('<div class="controls-section">', unsafe_allow_html=True)
+            edge_strength = st.slider(
+                "Edge Detection Strength",
+                1, 5, 3,
+                help="Adjust how pronounced the edges should be"
+            )
+
+            text_options = st.expander("Text Options")
+            with text_options:
+                custom_text = st.text_input(
+                    "Add Custom Text",
+                    placeholder="Enter text for your coloring page"
+                )
+                text_position = st.radio(
+                    "Text Position",
+                    ["top", "bottom"],
+                    index=1
+                )
+            st.markdown('</div>', unsafe_allow_html=True)
+
+    with col2:
+        if uploaded_file:
+            try:
+                # Process the image
+                with st.spinner("Creating your coloring page..."):
+                    # Load and process image
+                    image = Image.open(uploaded_file)
+
+                    # Create tabs for before/after comparison
+                    tab1, tab2 = st.tabs(["Original", "Coloring Page"])
+
+                    with tab1:
+                        st.image(image, use_column_width=True)
+
+                    with tab2:
+                        # Process image
+                        processed_image = ColoringPageCreator.process_image(
+                            image.copy(),
+                            edge_detection_strength=edge_strength
+                        )
+
+                        # Add text if provided
+                        if custom_text:
+                            processed_image = ColoringPageCreator.add_text(
+                                processed_image,
+                                custom_text,
+                                position=text_position
+                            )
+
+                        st.image(processed_image, use_column_width=True)
+
+                        # Center the download button
+                        st.markdown('<div class="download-button">', unsafe_allow_html=True)
+                        download_image(processed_image, "coloring_page.png")
+                        st.markdown('</div>', unsafe_allow_html=True)
+
+            except Exception as e:
+                st.error(f"Error processing image: {str(e)}")
+                st.info("Please try uploading a different image or adjusting the settings.")
+
+        else:
+            st.info("👈 Upload an image to get started!")
+
+            # Show example/preview
+            st.markdown("""
+            ### Tips for best results:
+            - Use images with clear subjects and good contrast
+            - Avoid very busy or cluttered images
+            - Simple portraits or objects work best
+            - Higher resolution images produce better results
+            """)
+
+
 if __name__ == "__main__":
-    main()
