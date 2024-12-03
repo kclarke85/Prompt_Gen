@@ -10,3 +10,4 @@ dropbox
 load_dotenv
 moviepy
 gTTS
+google-generativeai
