@@ -1,5 +1,5 @@
 streamlit
-BeautifulSoup
+beautifulSoup
 pymongo
 Pillow
 pandas
