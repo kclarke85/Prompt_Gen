@@ -4,7 +4,15 @@ from bs4 import BeautifulSoup
 from typing import Tuple, List, Dict
 import re
 from datetime import datetime
-
+# Hide all Streamlit menus and footer
+hide_streamlit_style = """
+<style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+</style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 class URLValidator:
     URL_PATTERN = re.compile(
