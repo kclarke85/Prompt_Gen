@@ -1,6 +1,28 @@
 
 
 import streamlit as st
+# This must be the first Streamlit command
+st.set_page_config(
+    page_title="Your App Name",
+    page_icon="🧊",
+    menu_items={
+        'Get Help': None,
+        'Report a bug': None,
+        'About': None
+    }
+)
+
+# Then add the custom CSS to hide elements
+hide_streamlit_style = """
+<style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+</style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+# Rest of your Streamlit app code goes here
 import requests
 from bs4 import BeautifulSoup
 from typing import Tuple, List, Dict
