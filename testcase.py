@@ -1,9 +1,13 @@
-
-
 import streamlit as st
-# This must be the first Streamlit command
+import requests
+from bs4 import BeautifulSoup
+from typing import Tuple, List, Dict
+import re
+from datetime import datetime
+
+# This must be the first and only st.set_page_config() call
 st.set_page_config(
-    page_title="Your App Name",
+    page_title="QA Test Case Generator",
     page_icon="🧊",
     menu_items={
         'Get Help': None,
@@ -12,7 +16,7 @@ st.set_page_config(
     }
 )
 
-# Then add the custom CSS to hide elements
+# Hide Streamlit elements
 hide_streamlit_style = """
 <style>
 #MainMenu {visibility: hidden;}
@@ -21,13 +25,6 @@ header {visibility: hidden;}
 </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-
-# Rest of your Streamlit app code goes here
-import requests
-from bs4 import BeautifulSoup
-from typing import Tuple, List, Dict
-import re
-from datetime import datetime
 
 
 class URLValidator:
@@ -201,15 +198,10 @@ class QATestCaseGenerator:
 
 
 def main() -> None:
-    st.set_page_config(
-        page_title="QA Test Case Generator",
-        page_icon="https://120water.com/wp-content/uploads/2020/05/120WaterAudit_Logo_2C_RGB-1.png"
-    )
-
     # Add header image
     st.image(
         "https://images.pexels.com/photos/9749/hands-water-poor-poverty.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        use_container_width=True  # Fixed deprecated parameter
+        use_container_width=True
     )
 
     st.title("QA Test Case Generator")
