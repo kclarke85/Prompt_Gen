@@ -100,7 +100,6 @@ class QATestCaseGenerator:
         for i, form in enumerate(forms, 1):
             steps = ['Given I am on the page with the form']
 
-            # Input field validation
             inputs = form.find_all(['input', 'textarea', 'select'])
             for input_elem in inputs:
                 input_type = input_elem.get('type', 'text')
@@ -111,7 +110,6 @@ class QATestCaseGenerator:
                         f'Then the "{input_name}" field should accept the input'
                     ])
 
-                    # Add validation tests
                     if input_type in ['email', 'number', 'tel']:
                         steps.extend([
                             f'When I enter invalid data in the "{input_name}" field',
@@ -179,7 +177,6 @@ class QATestCaseGenerator:
 
 
 def main() -> None:
-    # Page configuration
     st.set_page_config(
         page_title="QA Test Case Generator",
         page_icon="https://120water.com/wp-content/uploads/2020/05/120WaterAudit_Logo_2C_RGB-1.png"
@@ -188,7 +185,8 @@ def main() -> None:
     # Add header image
     st.image(
         "https://images.pexels.com/photos/9749/hands-water-poor-poverty.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        use_column_width=True)
+        use_container_width=True  # Fixed deprecated parameter
+    )
 
     st.title("QA Test Case Generator")
     st.markdown("Generate comprehensive QA test cases from web pages")
